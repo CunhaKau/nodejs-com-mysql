@@ -38,27 +38,31 @@ var sql = "INSERT INTO estudante (nomecompleto, email, senha) VALUES (?, ?, ?)";
 
 conexao.query(sql, [nomecompleto, email, senha], function(error, result){
     if(error) throw error;
-    res.send("Estudante cadastrado com sucesso! " +result.insertId);
+    //res.send("Estudante cadastrado com sucesso! " +result.insertId);
+    res.redirect('/estudantes');
 });
 
     });
 });
 
-//continuar criar READ do banco de dados
+//READ do banco de dados
+app.get('/estudantes', function(req, res){
+ conexao.connect(function(error){
+ if(error) console.log(error);
+
+ var sql = "select * from estudante";
+
+ conexao.query(sql, function(error, result){
+    if(error) console.log(error);
+   // console.log(result); Mostra no terminal o select
+
+   res.render("estudantes", {estudante:result});
+ });
+ });
+
+});
 
 
-app.listen(7002);
+app.listen(7008);
 
 
-
-// conexao.connect(function(error){
-//    if(error) throw error; 
-//    //console.log("O banco de dados foi conectado!");
-
-//    conexao.query("select * from estudante", function(error, result){
-//     if(error) throw error;
-//     console.log(result);
-//     console.log(result[0]);
-//     console.log(result[0].nomecompleto);
-//    });
-// });
