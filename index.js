@@ -62,7 +62,22 @@ app.get('/estudantes', function(req, res){
 
 });
 
+//deletando dado do banco - Delete
+app.get('/delete-estudante', function(req, res){
+conexao.connect(function(error){
+    if(error) console.log(error);
 
-app.listen(7008);
+    var sql = "delete from estudante where id=?";
+
+    var id = req.query.id;
+
+    conexao.query(sql, [id], function(error, result){
+         if(error) console.log(error);
+         res.redirect('/estudantes');
+    });
+});
+});
+
+app.listen(7009);
 
 
