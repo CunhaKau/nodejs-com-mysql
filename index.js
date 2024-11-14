@@ -22,8 +22,9 @@ app.post('/', function(req, res){
    var email = req.body.email;
    var senha = req.body.senha; 
 
-   conexao.connect(function(error){
-    if(error) throw error;
+   //Estou fazendo via Pool a conexão
+//   conexao.connect(function(error){
+//    if(error) throw error;
 
 /* var sql = "INSERT INTO estudante (nomecompleto, email, senha) VALUES(' "+nomecompleto+" ', ' "+email+" ', ' "+senha+" ')";
 
@@ -43,12 +44,14 @@ conexao.query(sql, [nomecompleto, email, senha], function(error, result){
 });
 
     });
-});
+
 
 //READ do banco de dados
 app.get('/estudantes', function(req, res){
- conexao.connect(function(error){
- if(error) console.log(error);
+ 
+    //Executando via Pool
+ //conexao.connect(function(error){
+ //if(error) console.log(error);
 
  var sql = "select * from estudante";
 
@@ -60,12 +63,13 @@ app.get('/estudantes', function(req, res){
  });
  });
 
-});
 
 //deletando dado do banco - Delete
 app.get('/delete-estudante', function(req, res){
-conexao.connect(function(error){
-    if(error) console.log(error);
+
+    //Executando via Pool
+//    conexao.connect(function(error){
+ //   if(error) console.log(error);
 
     var sql = "delete from estudante where id=?";
 
@@ -75,6 +79,42 @@ conexao.connect(function(error){
          if(error) console.log(error);
          res.redirect('/estudantes');
     });
+});
+
+
+//Update - alterando dados no banco de dados
+app.get('/update-estudante', function(req, res){
+ 
+    var sql = "select * from estudante where id=?";
+
+    var id = req.query.id;
+
+    conexao.query(sql, [id], function(error, result){
+        if(error) console.log(error);
+           // Verifica se a consulta retornou algum resultado
+           if (result && result.length > 0) {
+            res.render("alterarestudantes", { estudante: result[0] });
+        } else {
+            res.status(404).send('Estudante não encontrado');
+        }
+    });
+
+});
+
+
+//Update - Método Post para enviar o dado alterado para o BD
+app.post('/update-estudante', function(req, res){
+var nomecompleto = req.body.nomecompleto;
+var email = req.body.email;
+var senha = req.body.senha;
+var id = req.body.id;
+
+var sql = "UPDATE estudante set nomecompleto=?, email=?, senha=? where id=?";
+
+
+conexao.query(sql, [nomecompleto, email, senha, id], function(error, result){
+if(error) console.log(error);
+res.redirect('/estudantes');
 });
 });
 
